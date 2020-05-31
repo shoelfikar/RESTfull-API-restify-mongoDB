@@ -1,0 +1,23 @@
+{
+  "name": "book_restfull_api",
+  "version": "1.0.0",
+  "description": "book restfull api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "sulfikardi",
+  "license": "ISC",
+  "dependencies": {
+    "mongodb": "^3.5.8",
+    "mongoose": "^5.9.16",
+    "mongoose-timestamp": "^0.6.0",
+    "restify": "^8.5.1",
+    "restify-errors": "^8.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
