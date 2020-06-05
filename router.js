@@ -1,54 +1,97 @@
-// 'use strict'
-
-
-// module.exports = function(ctx){
-//   const client = ctx.client
-//   const server = ctx.server
-//   const database = client.db('booklibrary')
-//   const collection = database.collection('users')
-
-  
-//   server.get('/books', async (req, res, next) => {
-//     try{
-//       const user = await collection.find().pretty()
-//       res.json(user)
-//       next()
-//     } catch(err){
-//       return next(err)
-//     }
-// })
-
-//   server.post('/books', (req, res, next) => {
-//     const {name, email, status} = req.body
-//     const data = ({
-//       name: name,
-//       email:email,
-//       status: status,
-//       created: new Date(),
-//       updated: new Date()
-//     })
-
-//     collection.insertOne(data)
-//       .then(doc => res.send (200, doc.ops[0]))
-//       .catch(err => res.send(500, err))
-//       next()
-//   })
-// }
-
+const config = require('./config')
 const error = require('restify-errors')
-const db = require('./config')
-module.exports = users => {
-  users.get('/user', async (req, res, next) => {
-    try{
-      db.getDB().collection('users').find({}).toArray((err, document) => {
-        if(err)
-          console.log(err)
-        else{
-          res.json(document)
-        }
-      })
-    } catch(err){
-      return next(new error.InvalidContentError(err))
-    }
-  })
+
+const getUsers = async (req, res, next) => {
+  try{
+    await config.getDB().collection('users').find({}).toArray((err, document) => {
+      if(err)
+        console.log(err)
+      else{
+        res.json(document)
+      }
+    })
+  } catch(err){
+    return next(new error.InvalidContentError(err))
+  }
+}
+
+const getDetailUser = async (req, res, next) => {
+  try{
+    const userID = req.params.id
+    await config.getDB().collection('users').findOne({_id: config.getPrimaryKey(userID)}, (err, result) => {
+      if(err){
+        console.log(err)
+      }else{
+        res.json(result)
+      }
+    })
+  }catch(err){
+    return next(new error.InvalidContentError(err))
+  }
+}
+
+const createUser = async (req, res, next) => {
+  try{
+    const {name, email, status} = req.body
+    const data = ({
+      name: name,
+      email:email,
+      status: status,
+      created: new Date(),
+      updated: new Date()
+    })
+    await config.getDB().collection('users').insertOne(data, (err, result) => {
+      if(err)
+        console.log(err)
+      else{
+        res.json({result: result, document: result.ops[0]})
+      }
+    })
+  }catch(err){
+    return next(new error.InvalidContentError(err))
+  }
+}
+
+const updateUser = async (req, res, next) => {
+  try{
+    const userID = req.params.id
+    const {name, email, status} = req.body
+    await config.getDB().collection('users').findOneAndUpdate({_id: config.getPrimaryKey(userID)}, {$set : {
+      name: name,
+      email:email,
+      status: status,
+      updated: new Date()
+    }}, {returnOriginal : false}, (err, result) => {
+      if(err){
+        console.log(err)
+      }else{
+        res.json(result)
+      }
+    })
+  } catch(err){
+    return next(new error.InvalidContentError(err))
+  }
+}
+
+const deleteUser = async (req, res, next) => {
+  try{
+    const userID = req.params.id
+    await config.getDB().collection('users').findOneAndDelete({_id: config.getPrimaryKey(userID)}, (err, result) => {
+      if(err){
+        console.log(err)
+      }else{
+        res.json(result)
+      }
+    })
+  }catch(err){
+    return next(new error.InvalidContentError(err))
+  }
+}
+
+module.exports = {
+  getUsers,
+  createUser,
+  updateUser,
+  deleteUser,
+  getDetailUser
 }
