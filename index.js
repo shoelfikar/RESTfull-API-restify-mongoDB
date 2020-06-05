@@ -14,6 +14,7 @@ server.post('/user/register', router.createUser)
 server.put('/user/:id', router.updateUser)
 server.del('/user/:id', router.deleteUser )
 server.get('/user/:id', router.getDetailUser)
+server.post('/user/login', router.loginUser)
 
 server.get('/', (req,res)=>{
   res.send('welcome to my api')

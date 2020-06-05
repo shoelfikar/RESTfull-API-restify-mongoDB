@@ -91,10 +91,30 @@ const deleteUser = async (req, res, next) => {
   }
 }
 
+const loginUser = async (req, res, next) => {
+  try{
+    const {email, password} = req.body
+    await config.getDB().collection('users').findOne({email: email}, (err, result) => {
+      if(result == null || err){
+        return next(new error.InvalidHeaderError('email anda belum terdaftar!'))
+      }
+      let cekPassword =  compareSync(password, result.password || password)
+      if(!cekPassword){
+        helpers.response(res, 'fail',null, 'Password anda salah!')
+      }else{
+        helpers.response(res, 'success', result, 'Login  success!')
+      }
+    })
+  }catch(err){
+    return next(new error.InvalidContentError(err))
+  }
+}
+
 module.exports = {
   getUsers,
   createUser,
   updateUser,
   deleteUser,
-  getDetailUser
+  getDetailUser,
+  loginUser
 }
