@@ -11,6 +11,7 @@
   "author": "sulfikardi",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "mongodb": "^3.5.8",
     "mongoose": "^5.9.16",
     "mongoose-timestamp": "^0.6.0",

@@ -1,5 +1,6 @@
 const config = require('./config')
 const error = require('restify-errors')
+const {genSaltSync,compareSync,hashSync} = require('bcryptjs');
 const helpers = require('./helper')
 const getUsers = async (req, res, next) => {
   try{
@@ -32,10 +33,12 @@ const getDetailUser = async (req, res, next) => {
 
 const createUser = async (req, res, next) => {
   try{
-    const {name, email, status} = req.body
+    const {name, email,password, status} = req.body
+    const salt = genSaltSync(10)
     const data = ({
       name: name,
       email:email,
+      password: hashSync(password, salt),
       status: status,
       created: new Date(),
       updated: new Date()

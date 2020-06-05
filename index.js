@@ -10,7 +10,7 @@ server.use(restify.plugins.bodyParser())
 
 //router endpoint user
 server.get('/user', router.getUsers )
-server.post('/user', router.createUser)
+server.post('/user/register', router.createUser)
 server.put('/user/:id', router.updateUser)
 server.del('/user/:id', router.deleteUser )
 server.get('/user/:id', router.getDetailUser)
